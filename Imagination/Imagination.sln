@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommentsService", "Comments
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StorageService", "StorageService\StorageService.csproj", "{127C8225-10BE-406D-9C5F-8E7F0EDE11A4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserService", "UserService\UserService.csproj", "{DD702769-4F33-453C-85E5-5A3EBD345E69}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{127C8225-10BE-406D-9C5F-8E7F0EDE11A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{127C8225-10BE-406D-9C5F-8E7F0EDE11A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{127C8225-10BE-406D-9C5F-8E7F0EDE11A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD702769-4F33-453C-85E5-5A3EBD345E69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD702769-4F33-453C-85E5-5A3EBD345E69}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD702769-4F33-453C-85E5-5A3EBD345E69}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD702769-4F33-453C-85E5-5A3EBD345E69}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
