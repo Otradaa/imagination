@@ -14,5 +14,8 @@ namespace ChannelService.Data.Models
         public string Description { get; set; }
         [Required]
         public int UserId { get; set; }
+        [Required]
+        [DataType(DataType.Date)]
+        public DateTime Date { get; set; }
     }
 }

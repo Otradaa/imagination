@@ -13,5 +13,9 @@ namespace UserService.Data.Models
         public int BoardId { get; set; }
         [Required]
         public int ImageId { get; set; }
+        [Required]
+        [DataType(DataType.Date)]
+        public DateTime Date { get; set; }
+        public string Description { get; set; }
     }
 }

@@ -10,7 +10,7 @@ namespace ChannelService.Data.Repository
     public class ChannelContext : DbContext
     {
         public DbSet<Channel> Channels { get; set; }
-        public DbSet<ChannelSubscriber> ChannelSubscribers { get; set; }
+        public DbSet<Subscription> ChannelSubscribers { get; set; }
         public DbSet<ChannelImage> ChannelImages { get; set; }
 
         public ChannelContext(DbContextOptions<ChannelContext> options)

@@ -4,15 +4,14 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace UserService.Data.Models
+namespace ChannelService.Data.Models
 {
-    public class UserBoard
+    public class Subscription
     {
         public int Id { get; set; }
         [Required]
-        public int UserId { get; set; }
+        public int ChannelId { get; set; }
         [Required]
-        public string BoardName { get; set; }
-        public string Description { get; set; }
+        public int UserId { get; set; }
     }
 }
