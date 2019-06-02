@@ -19,8 +19,8 @@ namespace UserService.Controllers
         public UserBoardsController(IUserRepository repo) => _repo = repo;
 
         // получение списка досок пользователя
-        [HttpGet("{clientId}")]
-        public IActionResult GetBoardsByUserId([FromRoute] int userId)
+        [HttpGet("{userId}")]
+        public IActionResult GetBoardsByUserId(int userId)
         {
             if (!ModelState.IsValid)
             {
