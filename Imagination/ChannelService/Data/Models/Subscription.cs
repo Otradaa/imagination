@@ -14,4 +14,13 @@ namespace ChannelService.Data.Models
         [Required]
         public int UserId { get; set; }
     }
+
+    public class SubsResponse
+    {
+        public int Id { get; set; }
+        [Required]
+        public string ChannelName { get; set; }
+        [Required]
+        public int UserId { get; set; }
+    }
 }
