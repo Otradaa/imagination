@@ -14,6 +14,25 @@ namespace UserService.Data.Repository
         public UserRepository(UserContext context)
         {
             _context = context;
+            if (!_context.Users.Any())
+            {
+                _context.Users.Add(new User { FirstName = "Фома", LastName = "Яшин", Email = "yafoma@gmail.com", ShortName = "YaFoma" });
+                _context.Users.Add(new User { FirstName = "Геркулес", LastName = "КрасноСолнышко", Email = "gerkrasoln@gmail.com", ShortName = "YasnoSolnce" });
+
+                _context.SaveChanges();
+            }
+
+            if (!_context.UserBoards.Any())
+            {
+                _context.UserBoards.Add(new UserBoard { UserId = 1, BoardName = "Первая доска", Description = "Для работы"});
+                _context.SaveChanges();
+            }
+
+            if (!_context.BoardImages.Any())
+            {
+                _context.BoardImages.Add(new BoardImage { BoardId = 1, ImageId = 1, Description = "Лучшая картинка на свете", Date = DateTime.Now});
+                _context.SaveChanges();
+            }
         }
 
         public IEnumerable<User> GetUsers()
