@@ -13,5 +13,9 @@ namespace ChannelService.Data.Models
         public int ChannelId { get; set; }
         [Required]
         public int ImageId { get; set; }
+        [Required]
+        [DataType(DataType.Date)]
+        public DateTime Date { get; set; }
+        public string Description { get; set; }
     }
 }
