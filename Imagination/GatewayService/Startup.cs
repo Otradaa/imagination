@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GatewayService.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -33,10 +34,11 @@ namespace GatewayService
 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.AddHttpClient<IUserService, UserService>();
-            services.AddHttpClient<IChannelService, ChannelService>();
-            services.AddHttpClient<IStorageService, StorageService>();
-            services.AddSingleton<IGatewayService, GatewayService>();
+            services.AddHttpClient<IUserService, Services.UserService>();
+            services.AddHttpClient<IChannelService, Services.ChannelService>();
+           // services.AddHttpClient<IStorageService, Services.StorageService>();
+            services.AddSingleton<IGatewayService, Services.GatewayService>();
+            services.AddTransient<Services.GatewayService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

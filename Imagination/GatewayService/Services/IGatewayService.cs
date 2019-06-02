@@ -11,7 +11,7 @@ namespace GatewayService.Services
     {
         Task<IEnumerable<UserBoard>> GetUserBoardsList(int userId);
         Task<IEnumerable<Channel>> GetUserChannelsList(int userId);
-        Task<IEnumerable<Subscription>> GetUserSubscriptionsList(int userId);
+        Task<IEnumerable<SubsResponse>> GetUserSubscriptionsList(int userId);
         Task<User> GetUserProfile(int userId);
         Task<UserBoard> AddUserBoard(int userId, UserBoard board);
         Task<Channel> AddUserChannel(int userId, Channel channel);

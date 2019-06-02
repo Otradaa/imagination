@@ -67,7 +67,7 @@ namespace GatewayService.Controllers
         {
             var profile = await _gateway.GetUserProfile(id);
             if (profile != null)
-                return View(profile);
+                return View("~/Views/Profiles/Profile.cshtml",profile);
             _logger.LogInformation($"%%% no user {id}");
             return NotFound();
         }

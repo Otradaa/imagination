@@ -12,18 +12,18 @@ namespace GatewayService.Services
     {
         private readonly IChannelService _channelService;
         private readonly IUserService _userService;
-        private readonly IStorageService _storageService;
+        //private readonly IStorageService _storageService;
         //private readonly IAuthService authService;
         private readonly ILogger _logger;
 
         public GatewayService(IChannelService channelService,// IAuthService _authService,
-            IUserService userService, IStorageService storageService,
+            IUserService userService,// IStorageService storageService,
             ILogger<GatewayService> logger)
         {
             _logger = logger;
             _channelService = channelService;
             _userService = userService;
-            _storageService = storageService;
+           // _storageService = storageService;
             //authService = _authService;
         }
 
@@ -37,7 +37,7 @@ namespace GatewayService.Services
             return await _channelService.GetUserChannelsList(userId);
         }
 
-        public async Task<IEnumerable<Subscription>> GetUserSubscriptionsList(int userId)
+        public async Task<IEnumerable<SubsResponse>> GetUserSubscriptionsList(int userId)
         {
             return await _channelService.GetUserSubscriptionsList(userId);
         }
