@@ -21,6 +21,10 @@ namespace ChannelService.Data.Models
         [Required]
         public string ChannelName { get; set; }
         [Required]
+        public string Description { get; set; }
+        [Required]
         public int UserId { get; set; }
+        [Required]
+        public int ChannelId { get; set; }
     }
 }
