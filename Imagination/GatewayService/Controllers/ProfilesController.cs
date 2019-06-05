@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ChannelService.Data.Models;
+using GatewayService.Areas.Identity.Data;
 using GatewayService.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using UserService.Data.Models;
@@ -13,11 +15,14 @@ namespace GatewayService.Controllers
     [Route("[controller]")]
     public class ProfilesController : Controller
     {
+        private readonly UserManager<Account> _userManager;
         private readonly IGatewayService _gateway;
         private readonly ILogger _logger;
 
-        public ProfilesController(IGatewayService gateway, ILogger<ProfilesController> logger)
+        public ProfilesController(IGatewayService gateway, ILogger<ProfilesController> logger,
+            UserManager<Account> userManager)
         {
+            _userManager = userManager;
             _gateway = gateway;
             _logger = logger;
         }
@@ -74,14 +79,33 @@ namespace GatewayService.Controllers
 
         // доабвление доски
         // POST api/profiles/id/boards
-        [HttpPost("{id}/boards")]
-        public async Task<IActionResult> AddUserBoard(int id, [FromBody] UserBoard board)
+        [HttpPost("{id}/create")]
+        public async Task<IActionResult> AddBoardorChannel(int id, string name, string descr, bool isChannel)
         {
-            var createdBoard = await _gateway.AddUserBoard(id, board);
-            if (createdBoard != null)
-                return View();// Created($"{id}/boards/{createdBoard.Id}", createdBoard);
-            _logger.LogInformation($"%%% couldnt add the board");
-            return BadRequest();
+            if (isChannel)
+            {
+                var channel = new Channel() { UserId = id, Name = name, Description = descr, Date = DateTime.Now };
+                var createdChannel = await _gateway.AddUserChannel(id, channel);
+                if (createdChannel != null)
+                {
+                    var fullchannel = new Models.ChannelWithImages() { channel = createdChannel };
+                    return View("~/Views/Profiles/Channel.cshtml", fullchannel);
+                }
+                _logger.LogInformation($"%%% couldnt add the channel");
+                return BadRequest();
+            }
+            else
+            {
+                var board = new UserBoard() { UserId = id, BoardName = name, Description = descr };
+                var createdBoard = await _gateway.AddUserBoard(id, board);
+                if (createdBoard != null)
+                {
+                    var fullboard = new Models.BoardWithImages() { board = createdBoard };
+                    return View("~/Views/Profiles/Board.cshtml", fullboard);
+                }
+                _logger.LogInformation($"%%% couldnt add the board");
+                return BadRequest();
+            }
         }
 
         // добавление канала
@@ -96,7 +120,7 @@ namespace GatewayService.Controllers
             return BadRequest();
         }
 
-        // 
+        // добавление подписки
         // POST api/profiles/id/subscriptions
         [HttpPost("{id}/subscriptions")]
         public async Task<IActionResult> AddUserSubscription(int id, [FromBody] Subscription subscription)
@@ -107,6 +131,15 @@ namespace GatewayService.Controllers
             _logger.LogInformation($"%%% couldnt add the subscription");
             return BadRequest();
         }
+
+        public IActionResult NewBoard(int userid)
+        {
+            var model = new UserBoard { UserId = userid };
+
+            return PartialView("CreateBoardModalPartial", model);
+        }
+
+        private Task<Account> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
     }
 }
