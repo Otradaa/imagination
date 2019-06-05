@@ -49,7 +49,7 @@ namespace UserService.Controllers
 
             await _repo.AddBoard(userBoard);
 
-            return CreatedAtAction("GetUserBoard", new { id = userBoard.Id }, userBoard);
+            return Ok(userBoard);
         }
 
         // удаление доски
@@ -75,8 +75,7 @@ namespace UserService.Controllers
 
         // добавление изображения в доску
         // POST: api/UserBoards
-        [HttpPost]
-        [Route("api/UserBoards/images")]
+        [HttpPost("images")]
         public async Task<IActionResult> PostImageOnBoard([FromBody] BoardImage image)
         {
             if (!ModelState.IsValid)
@@ -86,12 +85,12 @@ namespace UserService.Controllers
 
             await _repo.AddImage(image);
 
-            return CreatedAtAction("GetUserBoard", new { id = image.Id }, image);
+            return Ok(image);
         }
 
         // удаление изображения из доски
         // DELETE: api/UserBoards/5
-        [HttpDelete("/images/{id}")]
+        [HttpDelete("images/{id}")]
         public async Task<IActionResult> DeleteImageFromBoard([FromRoute] int id)
         {
             if (!ModelState.IsValid)
@@ -112,7 +111,7 @@ namespace UserService.Controllers
 
         // получение списка изображений доски
         [HttpGet("images/{id}")]
-        public IActionResult GetImagesByBoardId([FromRoute] int id)
+        public async Task<IActionResult> GetImagesByBoardId([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
@@ -126,7 +125,9 @@ namespace UserService.Controllers
                 return NotFound();
             }
 
-            return Ok(images);
+            var _board = await _repo.GetBoard(id);
+
+            return Ok(new FullBoard() { board = _board, boardimages = images});
         }
 
         // PUT: api/UserBoards/5
