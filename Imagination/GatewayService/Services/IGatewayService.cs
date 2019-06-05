@@ -1,4 +1,5 @@
 ﻿using ChannelService.Data.Models;
+using GatewayService.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,5 +17,9 @@ namespace GatewayService.Services
         Task<UserBoard> AddUserBoard(int userId, UserBoard board);
         Task<Channel> AddUserChannel(int userId, Channel channel);
         Task<Subscription> AddUserSubscription(int userId, Subscription subscription);
+        Task<BoardWithImages> GetBoardWithImages(int id);
+        Task<ChannelWithImages> GetChannelWithImages(int id);
+        Task LoadImageInBoard(string path, string descr, string tags, int bid);
+        Task LoadImageInChannel(string path, string descr, string tags, int id);
     }
 }

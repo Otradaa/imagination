@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GatewayService.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,5 +12,7 @@ namespace GatewayService.Services
         Task<IEnumerable<UserBoard>> GetUserBoardsList(int id);
         Task<User> GetUserProfile(int id);
         Task<UserBoard> AddUserBoard(int id, UserBoard board);
+        Task<BoardWithImages> GetBoardWithImages(int id);
+        Task<BoardImage> AddBoardImage(int bid, int img, string descr);
     }
 }
