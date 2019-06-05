@@ -13,9 +13,5 @@ namespace StorageService.Data.Models
         public string Tags { get; set; }
         [Required]
         public string Path { get; set; }
-        [Required]
-        public int Width { get; set; }
-        [Required]
-        public int Height { get; set; }
     }
 }

@@ -15,8 +15,8 @@ namespace StorageService.Models
             Database.EnsureCreated();
             if (!Images.Any())
             {
-                Images.Add(new Image { Tags = "cake, cherry, happy", Path = "../../../wwwroot/images/111.jpg",
-                                         Height = 680, Width = 680 });
+                Images.Add(new Image { Tags = "cake, cherry, happy", Path = "~/images/111.jpg" });
+                Images.Add(new Image { Tags = "cake, happy birthday", Path = "~/images/111.jpg" });
                 //Images.Add(new Image { });
 
                 SaveChanges();
