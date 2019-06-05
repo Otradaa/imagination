@@ -1,0 +1,48 @@
+﻿@model GatewayService.Models.BoardWithImages
+@inject GatewayService.Services.GatewayService gate
+@{
+    Layout = "_Layout";
+}
+
+@{
+    ViewData["Title"] = Model.board.BoardName;
+}
+
+@{ var bis = Model.boardimages; var ims = Model.images;}
+
+<p>@Model.board.BoardName</p>
+<p>@Model.board.Description</p>
+@{
+    var uid = @Model.board.UserId;
+    var bid = @Model.board.Id;
+    <text>@uid </text><br/>
+    <text> @bid </text>
+}
+
+
+<form asp-action="LoadImageInBoard" asp-controller="Images" asp-route-uid="@uid" asp-route-bid="@bid" method="post" enctype="multipart/form-data">
+    <input type="hidden" value="@uid" name="uid" />
+    <input type="hidden" value="@bid" name="bid" />
+    <input name="tags" value="tags" /><br>
+    <input name="descr" value="description" /><br>
+    <input type="file" name="uploadedFile" /><br>
+    <input type="submit" value="Загрузить" />
+</form>
+
+@if (bis != null && ims != null)
+{
+    <ul>
+
+        @for (int i = 0; i < bis.Count(); i++)
+        {
+            <li>
+                <img width=200 src=@ims.ElementAt(i).Path asp-append-version="true" />
+                <p>@ims.ElementAt(i).Path</p>
+                <p> @ims.ElementAt(i).Tags</p>
+                <p> @bis.ElementAt(i).Description </p>
+                <p> @bis.ElementAt(i).Date </p>
+            </li>
+        }
+
+    </ul>
+}
