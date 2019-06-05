@@ -36,7 +36,7 @@ namespace GatewayService
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddHttpClient<IUserService, Services.UserService>();
             services.AddHttpClient<IChannelService, Services.ChannelService>();
-           // services.AddHttpClient<IStorageService, Services.StorageService>();
+            services.AddHttpClient<IStorageService, Services.StorageService>();
             services.AddSingleton<IGatewayService, Services.GatewayService>();
             services.AddTransient<Services.GatewayService>();
         }
@@ -56,6 +56,7 @@ namespace GatewayService
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseAuthentication();
             app.UseCookiePolicy();
 
             app.UseMvc();

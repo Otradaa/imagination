@@ -11,7 +11,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ChannelService\ChannelService.csproj" />
+    <ProjectReference Include="..\StorageService\StorageService.csproj" />
     <ProjectReference Include="..\UserService\UserService.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Identity\Services\" />
   </ItemGroup>
 
 </Project>
