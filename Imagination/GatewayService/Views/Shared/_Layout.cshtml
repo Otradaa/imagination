@@ -48,22 +48,23 @@
                     <a class="nav-link" href="#">About</a>
                 </li>
             </ul>
-            <form class="form-inline my-2 my-lg-0 mr-sm-2">
+            <form class="form-inline my-2 my-lg-0 mr-sm-4">
                 <input class="form-control mr-sm-2" type="text" placeholder="Search">
                 <button class="btn btn-secondary my-2 my-sm-0 mr-sm-4" type="submit">Search</button>
             </form>
-            <ul class="navbar-nav my-lg-0 ">
-                @if (User.Identity.IsAuthenticated)
-                {
-                    <text>@User.Identity.Name</text>
-                    <li class="nav-item"><a class="nav-link" asp-area="Identity" asp-page="/Account/Logout">Log out</a></li>
-                }
-                else
-                {
-                    <li class="nav-item"><a class="nav-link" asp-area="Identity" asp-page="/Account/Login">Log in</a></li>
-                    <li class="nav-item"><a class="nav-link" asp-area="Identity" asp-page="/Account/Register">Register</a></li>
-                }
-            </ul>
+            <partial name="_LoginPartial" />
+            <!--<ul class="navbar-nav my-lg-0 ">
+        @if (User.Identity.IsAuthenticated)
+        {
+            <text>@User.Identity.Name</text>
+            <li class="nav-item"><a class="nav-link" asp-area="Identity" asp-page="/Account/Logout">Log out</a></li>
+        }
+        else
+        {
+            <li class="nav-item"><a class="nav-link" asp-area="Identity" asp-page="/Account/Login">Log in</a></li>
+            <li class="nav-item"><a class="nav-link" asp-area="Identity" asp-page="/Account/Register">Register</a></li>
+        }
+    </ul>-->
         </div>
     </nav>
   <!--  <nav class="navbar navbar-expand-lgnavbar-light bg-light">
