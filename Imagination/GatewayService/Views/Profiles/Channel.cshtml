@@ -1,0 +1,63 @@
+﻿@model GatewayService.Models.ChannelWithImages
+
+@{
+    Layout = "_Layout";
+}
+@{ var bis = Model.images; var ims = Model.files;}
+
+
+<div>
+    <h4>ChannelWithImages</h4>
+    <button type="button" class="btn btn-primary">Подписаться</button>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.subsCount)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.subsCount)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.channel.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.channel.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.channel.Description)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.channel.Description)
+        </dd>
+    </dl>
+</div>
+
+<form asp-action="LoadImageInChannel" asp-controller="Images" asp-route-id="@Model.channel.Id" method="post" enctype="multipart/form-data">
+    <input type="hidden" value="@Model.channel.Id" name="id" />
+    <input name="tags" value="tags" /><br>
+    <input name="descr" value="description" /><br>
+    <input type="file" name="uploadedFile" /><br>
+    <input type="submit" value="Загрузить" />
+</form>
+
+@if (bis != null && ims != null)
+{
+    <ul>
+
+        @for (int i = 0; i < bis.Count(); i++)
+        {
+            <li>
+                <img width=200 src=@ims.ElementAt(i).Path asp-append-version="true" />
+                <p>@ims.ElementAt(i).Path</p>
+                <p> @ims.ElementAt(i).Tags</p>
+                <p> @bis.ElementAt(i).Description </p>
+                <p> @bis.ElementAt(i).Date </p>
+            </li>
+         }
+
+    </ul>
+}
+        <!--<div>
+            @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
+            <a asp-action="Index">Back to List</a>
+        </div>-->
