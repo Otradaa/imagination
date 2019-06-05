@@ -28,6 +28,21 @@ namespace ChannelService.Controllers
             return _context.Channels.Where(c => c.UserId == userid);
         }
 
+        [HttpGet("{id}/images")]
+        public ResponseChannel GetChannelImages([FromRoute] int id)
+        {
+            var cims = _context.ChannelImages.Where(c => c.ChannelId == id);
+            var ch = _context.Channels.Find(id);
+            var scount = _context.Subscriptions.Where(c => c.ChannelId == id).Count();
+            return new ResponseChannel() { channel = ch, images = cims, subsCount = scount };
+        }
+
+        [HttpGet("{id}/subs")]
+        public int GetChannelSubs([FromRoute] int id)
+        {
+            return _context.Subscriptions.Where(c => c.ChannelId == id).Count();
+        }
+
         // GET: api/Channels/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetChannel([FromRoute] int id)
@@ -116,6 +131,20 @@ namespace ChannelService.Controllers
             await _context.SaveChangesAsync();
 
             return Ok(channel);
+        }
+
+        [HttpPost("images")]
+        public async Task<IActionResult> PostImage([FromBody] ChannelImage image)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            _context.ChannelImages.Add(image);
+            await _context.SaveChangesAsync();
+
+            return Ok(image);
         }
 
         private bool ChannelExists(int id)

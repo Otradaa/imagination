@@ -23,18 +23,20 @@ namespace ChannelService.Controllers
 
         // GET: api/Subscriptions
         [HttpGet]
-        public IEnumerable<SubsResponse> GetChannelSubscribers([FromQuery] int userid)
+        public IEnumerable<SubsResponse> GetUserSubscriptions([FromQuery] int userid)
         {
             var subs = _context.Subscriptions.Where(s => s.UserId == userid);
             var resultSubs = new List<SubsResponse>();
             foreach (var sub in subs)
             {
-                var channelname = _context.Channels.Find(sub.ChannelId).Name;
+                var channel = _context.Channels.Find(sub.ChannelId);
                 resultSubs.Add(new SubsResponse()
                 {
                     Id = sub.Id,
-                    UserId = sub.UserId,
-                    ChannelName = channelname
+                    UserId = userid,
+                    ChannelId = channel.Id,
+                    ChannelName = channel.Name,
+                    Description = channel.Description
                 });
             }
             return resultSubs;
