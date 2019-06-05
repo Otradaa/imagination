@@ -23,9 +23,9 @@ namespace StorageService.Controllers
 
         // GET: api/Images
         [HttpGet]
-        public IEnumerable<Image> GetImage()
+        public IEnumerable<Image> GetImage([FromBody] IEnumerable<int> ids)
         {
-            return _context.Images;
+            return _context.Images.Where(m => ids.Contains(m.Id));
         }
 
         // GET: api/Images/5
