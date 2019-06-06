@@ -18,11 +18,16 @@ namespace GatewayService.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<Data.Account> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly UserManager<Data.Account> _userManager;
 
-        public LoginModel(SignInManager<Data.Account> signInManager, ILogger<LoginModel> logger)
+
+        public LoginModel(SignInManager<Data.Account> signInManager, 
+            UserManager<Data.Account> userManager,
+            ILogger<LoginModel> logger)
         {
             _signInManager = signInManager;
             _logger = logger;
+            _userManager = userManager;
         }
 
         [BindProperty]
@@ -77,6 +82,8 @@ namespace GatewayService.Areas.Identity.Pages.Account
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: true);
                 if (result.Succeeded)
                 {
+                    var account = await _signInManager.UserManager.FindByEmailAsync(Input.Email);
+                    returnUrl = Url.Content("~/profiles/" + account.ProfileId.ToString());
                     _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
                 }
