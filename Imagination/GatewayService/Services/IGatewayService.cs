@@ -21,5 +21,7 @@ namespace GatewayService.Services
         Task<ChannelWithImages> GetChannelWithImages(int id);
         Task LoadImageInBoard(string path, string descr, string tags, int bid);
         Task LoadImageInChannel(string path, string descr, string tags, int id);
+        Task<int> AddUser(User profile);
+
     }
 }

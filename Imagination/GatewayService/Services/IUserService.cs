@@ -14,5 +14,6 @@ namespace GatewayService.Services
         Task<UserBoard> AddUserBoard(int id, UserBoard board);
         Task<BoardWithImages> GetBoardWithImages(int id);
         Task<BoardImage> AddBoardImage(int bid, int img, string descr);
+        Task<int> AddUser(User user);
     }
 }

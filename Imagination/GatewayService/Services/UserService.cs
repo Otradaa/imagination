@@ -106,5 +106,23 @@ namespace GatewayService.Services
                 return null;
             }
         }
+
+        public async Task<int> AddUser(User user)
+        {
+            var request = new HttpRequestMessage(new HttpMethod("POST"),
+                _remoteServiceBaseUrl + "/users");
+            request.Content = new StringContent(JsonConvert.SerializeObject(user),
+                Encoding.UTF8, "application/json");
+
+            try
+            {
+                var response = await _httpClient.SendAsync(request);
+                return await response.Content.ReadAsAsync<int>();
+            }
+            catch (Exception e)
+            {
+                return 0;
+            }
+        }
     }
 }

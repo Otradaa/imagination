@@ -94,5 +94,10 @@ namespace GatewayService.Services
             var image = await _storageService.AddImage(path, tags);
             await _channelService.AddChannelImage(id, image.Id, descr);
         }
+
+        public async Task<int> AddUser(User user)
+        {
+            return await _userService.AddUser(user);
+        }
     }
 }
