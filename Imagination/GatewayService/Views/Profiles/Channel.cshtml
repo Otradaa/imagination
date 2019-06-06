@@ -5,59 +5,94 @@
 }
 @{ var bis = Model.images; var ims = Model.files;}
 
+<div class="justify-content-center col-lg-8" style="margin-left:170px">
+    <div class="row">
+        <div class="col">
+            <h3>@Model.channel.Name</h3>
+        </div>
+        <div class="col align-self-end col-md-auto">
+            <text>@Model.subsCount</text>
+            <button type="button" class="btn btn-secondary">Подписаться</button>
+        </div>
 
-<div>
-    <h4>ChannelWithImages</h4>
-    <button type="button" class="btn btn-primary">Подписаться</button>
+    </div>
+    <h6>@Model.channel.Description</h6>
     <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.subsCount)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.subsCount)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.channel.Name)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.channel.Name)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.channel.Description)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.channel.Description)
-        </dd>
-    </dl>
+
+    <div style="margin-left:150px; margin-right:150px">
+        <form asp-action="LoadImageInChannel" asp-controller="Images" asp-route-id="@Model.channel.Id" method="post" enctype="multipart/form-data">
+            <div class="input-group">
+                <p>Загрузите новое изображение:</p>
+            </div>
+            <div class="input-group">
+                <input class="form-control" name="tags" value="tags"/><br>
+            </div>
+            <div class="input-group">
+                <input class="form-control" name="descr" value="description" /><br>
+            </div>
+            <div class="input-group">
+                <div class="input-group mb-3">
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="inputGroupFile02" name="uploadedFile">
+                        <label class="custom-file-label" for="inputGroupFile02">Выберите файл</label>
+                    </div>
+                    <div class="input-group-append">
+                        <!--<span class="input-group-text" id="">Upload</span>
+                <input type="file" name="uploadedFile" /><br>-->
+                        <input class="input-group-text" type="submit" value="Загрузить" />
+
+                    </div>
+                </div>
+            </div>
+
+
+        </form>
+    </div>
+    <hr />
+
+    @if (bis != null && ims != null)
+    {
+
+        <div>
+            @for (int i = 0; i < bis.Count(); i++)
+            {
+                <div class="container">
+                    <div class="card text-center" style="padding-bottom:30px;">
+                        <div>
+                            <img style="padding-top:50px; width: 500px; display: block; " class="mx-auto rounded card-img-top" src="@ims.ElementAt(i).Path" asp-append-version="true" alt="Sorry :c">
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">@ims.ElementAt(i).Tags</h5>
+                            <p class="card-text">@bis.ElementAt(i).Description</p>
+                            <p class="card-text"><small class="text-muted">@bis.ElementAt(i).Date</small></p>
+                        </div>
+                    </div>
+
+
+                </div>
+            }
+        </div>
+    }
 </div>
 
-<form asp-action="LoadImageInChannel" asp-controller="Images" asp-route-id="@Model.channel.Id" method="post" enctype="multipart/form-data">
-    <input type="hidden" value="@Model.channel.Id" name="id" />
-    <input name="tags" value="tags" /><br>
-    <input name="descr" value="description" /><br>
-    <input type="file" name="uploadedFile" /><br>
-    <input type="submit" value="Загрузить" />
-</form>
 
 @if (bis != null && ims != null)
+{ /*
+<ul>
+
+@for (int i = 0; i < bis.Count(); i++)
 {
-    <ul>
+<li>
+<img width=200 src=@ims.ElementAt(i).Path asp-append-version="true" />
+<p>@ims.ElementAt(i).Path</p>
+<p> @ims.ElementAt(i).Tags</p>
+<p> @bis.ElementAt(i).Description </p>
+<p> @bis.ElementAt(i).Date </p>
+</li>
 
-        @for (int i = 0; i < bis.Count(); i++)
-        {
-            <li>
-                <img width=200 src=@ims.ElementAt(i).Path asp-append-version="true" />
-                <p>@ims.ElementAt(i).Path</p>
-                <p> @ims.ElementAt(i).Tags</p>
-                <p> @bis.ElementAt(i).Description </p>
-                <p> @bis.ElementAt(i).Date </p>
-            </li>
-         }
-
-    </ul>
+</ul>*/
 }
-        <!--<div>
-            @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
-            <a asp-action="Index">Back to List</a>
-        </div>-->
+<!--<div>
+    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
+    <a asp-action="Index">Back to List</a>
+</div>-->
