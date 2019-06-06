@@ -10,30 +10,80 @@
 
 @{ var bis = Model.boardimages; var ims = Model.images;}
 
-<p>@Model.board.BoardName</p>
-<p>@Model.board.Description</p>
+<h1>@Model.board.BoardName</h1>
+<h5>@Model.board.Description</h5>
 @{
     var uid = @Model.board.UserId;
     var bid = @Model.board.Id;
-    <text>@uid </text><br/>
-    <text> @bid </text>
 }
 
+<hr />
+<div style="margin-left:150px; margin-right:150px">
+    <form asp-action="LoadImageInBoard" asp-controller="Images" asp-route-uid="@uid" asp-route-bid="@bid" method="post" enctype="multipart/form-data">
+            <p class="text-center">Добавьте на доску новое изображение:</p>
+            <input class="form-control" name="tags" value="tags" /><br>
+            <input class="form-control" name="descr" value="description" /><br>
+        <div class="form-group" style="margin-bottom:30px">
+            <div class="input-group mb-3">
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="inputGroupFile02" name="uploadedFile">
+                    <label class="custom-file-label" for="inputGroupFile02">Выберите файл</label>
+                </div>
+                <div class="input-group-append">
+                    <!--<span class="input-group-text" id="">Upload</span>
+                    <input type="file" name="uploadedFile" /><br>-->
+                    <input class="input-group-text" type="submit" value="Загрузить" />
 
-<form asp-action="LoadImageInBoard" asp-controller="Images" asp-route-uid="@uid" asp-route-bid="@bid" method="post" enctype="multipart/form-data">
-    <input type="hidden" value="@uid" name="uid" />
-    <input type="hidden" value="@bid" name="bid" />
-    <input name="tags" value="tags" /><br>
-    <input name="descr" value="description" /><br>
-    <input type="file" name="uploadedFile" /><br>
-    <input type="submit" value="Загрузить" />
-</form>
+                </div>
+            </div>
+        </div>
 
-@if (bis != null && ims != null)
-{
+
+    </form>
+</div>
+   <hr />
+
+@{
+    var colCount = 3;
+    var len = ims.Count();
+    var rowCount = Math.Ceiling((double)len / colCount);
+    int i = 0;
+    //у нас 3 столбца, количество строк посчитать, выводить пока изображения не закончатся по три
+}
+<div class="container" style="margin-top:20px">
+    @for (int k = 0; ims != null && k < rowCount && i < len; k++)
+    {
+        <div class="card-columns">
+            @for (int j = 0; j < colCount && i < len; j++, i++)
+            {
+                <div>
+                    <div class="card">
+                        <img class="card-img-top" src=@ims.ElementAt(i).Path asp-append-version="true" alt="">
+                        <div class="card-body">
+                            <h4 class="card-title">@ims.ElementAt(i).Tags</h4>
+                            <p class="card-text">@bis.ElementAt(i).Description</p>
+                        </div>
+                        <div class="card-body">
+                            <a href="#" class="card-link">Card link</a>
+                            <a href="#" class="card-link">Another link</a>
+                        </div>
+                        <div class="card-footer text-muted text-center">
+                            @bis.ElementAt(i).Date
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+    }
+</div>
+
+<!--
+    @if (bis != null && ims != null)
+{/*
     <ul>
 
-        @for (int i = 0; i < bis.Count(); i++)
+        @{} //for (int i = 0; i < bis.Count(); i++)
         {
             <li>
                 <img width=200 src=@ims.ElementAt(i).Path asp-append-version="true" />
@@ -45,4 +95,6 @@
         }
 
     </ul>
+    */
 }
+    -->
