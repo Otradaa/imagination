@@ -88,7 +88,7 @@ namespace UserService.Controllers
 
             await _repo.AddUser(user);
            
-            return CreatedAtAction("GetUser", new { id = user.Id }, user);
+            return Ok(user.Id);
         }
 
         // DELETE: api/Users/5
