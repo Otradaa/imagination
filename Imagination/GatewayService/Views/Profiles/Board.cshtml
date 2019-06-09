@@ -12,6 +12,8 @@
 
 <h1>@Model.board.BoardName</h1>
 <h5>@Model.board.Description</h5>
+    @Html.ActionLink("Удалить", "DeleteBoard", "Images", new { id = Model.board.Id, pid = Model.board.UserId }, null)
+
 @{
     var uid = @Model.board.UserId;
     var bid = @Model.board.Id;
@@ -43,29 +45,33 @@
 </div>
    <hr />
 
-@{
+@if (ims != null)
+{
     var colCount = 3;
     var len = ims.Count();
     var rowCount = Math.Ceiling((double)len / colCount);
     int i = 0;
     //у нас 3 столбца, количество строк посчитать, выводить пока изображения не закончатся по три
-}
+
 <div class="container" style="margin-top:20px">
     @for (int k = 0; ims != null && k < rowCount && i < len; k++)
     {
         <div class="card-columns">
             @for (int j = 0; j < colCount && i < len; j++, i++)
             {
+                string reff = ims.ElementAt(i).Path.Remove(0, 2);
                 <div>
                     <div class="card">
-                        <img class="card-img-top" src=@ims.ElementAt(i).Path asp-append-version="true" alt="">
-                        <div class="card-body">
+                        <a href="/@reff">
+                            <img class="card-img-top" src=@ims.ElementAt(i).Path asp-append-version="true" alt="">
+                        </a>
+                        <div class="card-body text-center">
                             <h4 class="card-title">@ims.ElementAt(i).Tags</h4>
                             <p class="card-text">@bis.ElementAt(i).Description</p>
                         </div>
-                        <div class="card-body">
-                            <a href="#" class="card-link">Card link</a>
-                            <a href="#" class="card-link">Another link</a>
+                        <div class="card-body text-center">
+                            @Html.ActionLink("Скачать", "DownloadImage", "Images", new { id = ims.ElementAt(i).Id, path = ims.ElementAt(i).Path }, null)
+                            @Html.ActionLink("Удалить", "DeleteImageFromBoard", "Images", new { pid = Model.board.UserId, id = Model.board.Id, imageid = bis.ElementAt(i).Id }, null)
                         </div>
                         <div class="card-footer text-muted text-center">
                             @bis.ElementAt(i).Date
@@ -77,7 +83,7 @@
         </div>
     }
 </div>
-
+}
 <!--
     @if (bis != null && ims != null)
 {/*
