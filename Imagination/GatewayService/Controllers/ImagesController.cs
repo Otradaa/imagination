@@ -4,22 +4,27 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using ChannelService.Data.Models;
+using GatewayService.Areas.Identity.Data;
 using GatewayService.Services;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using UserService.Data.Models;
 
 namespace GatewayService.Controllers
 {
-   // [Route("[controller]")]
+    // [Route("[controller]")]
     public class ImagesController : Controller
     {
+        private readonly UserManager<Account> _userManager;
         private readonly IGatewayService _gateway;
         private readonly ILogger _logger;
 
-        public ImagesController(IGatewayService gateway, ILogger<ProfilesController> logger)
+        public ImagesController(IGatewayService gateway, ILogger<ProfilesController> logger,
+            UserManager<Account> userManager)
         {
+            _userManager = userManager;
             _gateway = gateway;
             _logger = logger;
         }
@@ -30,7 +35,7 @@ namespace GatewayService.Controllers
             var fullboard = await _gateway.GetBoardWithImages(id);
             if (fullboard != null)
             {
-                return View("~/Views/Profiles/Board.cshtml",fullboard);
+                return View("~/Views/Profiles/Board.cshtml", fullboard);
             }
             _logger.LogInformation($"%%% not found {id} board");
             return NotFound();
@@ -39,7 +44,8 @@ namespace GatewayService.Controllers
         [HttpGet("channels/{id}")]
         public async Task<IActionResult> GetFullChannel(int id)
         {
-            var fullchannel = await _gateway.GetChannelWithImages(id);
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var fullchannel = await _gateway.GetChannelWithImages(id, user.ProfileId);
             if (fullchannel != null)
             {
                 return View("~/Views/Profiles/Channel.cshtml", fullchannel);
@@ -49,7 +55,7 @@ namespace GatewayService.Controllers
         }
 
         [HttpPost("{uid}/boards/{bid}/images")]
-        public async Task<IActionResult> LoadImageInBoard(int uid, int bid, string tags, string descr, IFormFile uploadedFile )
+        public async Task<IActionResult> LoadImageInBoard(int uid, int bid, string tags, string descr, IFormFile uploadedFile)
         {
             if (uploadedFile != null)
             {
@@ -58,7 +64,6 @@ namespace GatewayService.Controllers
                 {
                     await uploadedFile.CopyToAsync(fileStream);
                 }
-                ///////////////////////////////////////////////
                 var path = "~/images/" + filename;
                 await _gateway.LoadImageInBoard(path, descr, tags, bid);
             }
@@ -69,6 +74,7 @@ namespace GatewayService.Controllers
         [HttpPost("channels/{id}/images")]
         public async Task<IActionResult> LoadImageInChannel(int id, string tags, string descr, IFormFile uploadedFile)
         {
+            ///////////////////////////////////////////////
             if (uploadedFile != null)
             {
                 string filename = Path.GetFileNameWithoutExtension(Path.GetRandomFileName()) + uploadedFile.FileName;
@@ -76,7 +82,6 @@ namespace GatewayService.Controllers
                 {
                     await uploadedFile.CopyToAsync(fileStream);
                 }
-                ///////////////////////////////////////////////
                 var path = "~/images/" + filename;
                 await _gateway.LoadImageInChannel(path, descr, tags, id);
             }
@@ -84,85 +89,46 @@ namespace GatewayService.Controllers
             return RedirectToAction("GetFullChannel", new { id = id });
         }
 
-        // GET: Images
-        public ActionResult Index()
+        [HttpGet("{id}/download")]
+        public async Task<IActionResult> DownloadImage(int id, string path)
         {
-            return View();
-        }
-
-        // GET: Images/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: Images/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Images/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
+            path = Path.GetFullPath(path.Replace("~", "wwwroot"));
+            var memory = new MemoryStream();
+            using (var stream = new FileStream(path, FileMode.Open))
             {
-                // TODO: Add insert logic here
-
-                return RedirectToAction(nameof(Index));
+                await stream.CopyToAsync(memory);
             }
-            catch
-            {
-                return View();
-            }
+            memory.Position = 0;
+            return File(memory, "image/jpeg", Path.GetFileName(path));
         }
 
-        // GET: Images/Edit/5
-        public ActionResult Edit(int id)
+        [HttpGet("channels/{id}/images/{imageid}/delete")]
+        public async Task<IActionResult> DeleteImageFromChannel(int id, int imageid)
         {
-            return View();
+            /////////////////////////////////////////////////
+            await _gateway.DeleteImageFromChannel(id, imageid);
+            return RedirectToAction("GetFullChannel", new { id = id });
         }
 
-        // POST: Images/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        [HttpGet("{pid}/boards/{id}/images/{imageid}/delete")]
+        public async Task<IActionResult> DeleteImageFromBoard(int pid, int id, int imageid)
         {
-            try
-            {
-                // TODO: Add update logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            await _gateway.DeleteImageFromBoard(id, imageid);
+            return RedirectToAction("GetFullBoard", new { userid = pid, id = id });
         }
 
-        // GET: Images/Delete/5
-        public ActionResult Delete(int id)
+        [HttpGet("channels/{id}/delete")]
+        public async Task<IActionResult> DeleteChannel(int id, [FromQuery] int pid)
         {
-            return View();
+            await _gateway.DeleteChannel(id);
+            return RedirectToAction("Profile", "Profiles", new { id = pid });
         }
 
-        // POST: Images/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        [HttpGet("{pid}/boards/{id}/delete")]
+        public async Task<IActionResult> DeleteBoard(int id, int pid)
         {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            await _gateway.DeleteBoard(id);
+            return RedirectToAction("Profile", "Profiles", new { id = pid });
         }
     }
 }

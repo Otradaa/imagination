@@ -124,5 +124,37 @@ namespace GatewayService.Services
                 return 0;
             }
         }
+
+        public async Task DeleteImage(int id, int imageid)
+        {
+            var request = new HttpRequestMessage(new HttpMethod("DELETE"),
+                _remoteServiceBaseUrl + "/userboards/images/" + imageid.ToString());
+
+            try
+            {
+                var response = await _httpClient.SendAsync(request);
+                //return await response.Content.ReadAsAsync<ChannelImage>();
+            }
+            catch (Exception e)
+            {
+                //return null;
+            }
+        }
+
+        public async Task DeleteBoard(int id)
+        {
+            var request = new HttpRequestMessage(new HttpMethod("DELETE"),
+                _remoteServiceBaseUrl + "/userboards/" + id.ToString());
+
+            try
+            {
+                var response = await _httpClient.SendAsync(request);
+                //return await response.Content.ReadAsAsync<ChannelImage>();
+            }
+            catch (Exception e)
+            {
+                //return null;
+            }
+        }
     }
 }
