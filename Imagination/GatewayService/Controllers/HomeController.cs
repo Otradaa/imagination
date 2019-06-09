@@ -16,18 +16,16 @@ namespace GatewayService.Controllers
             return View("~/Views/Home/Index.cshtml");
         }
 
+        [HttpGet("about")]
         public IActionResult About()
         {
-            ViewData["Message"] = "Your application description page.";
-
-            return View();
+            return View("~/Views/Home/About.cshtml");
         }
 
+        [HttpGet("contact")]
         public IActionResult Contact()
         {
-            ViewData["Message"] = "Your contact page.";
-
-            return View();
+            return View("~/Views/Home/Contact.cshtml");
         }
 
         public IActionResult Privacy()
