@@ -41,7 +41,7 @@ namespace GatewayService.Controllers
 
         // список каналов пользователя
         // GET api/profiles/id/channels
-        [HttpGet("{id}/channels")]
+        [HttpGet("profile/{id}/channels")]
         public async Task<IActionResult> GetUserChannelsList(int id)
         {
             var channelsList = await _gateway.GetUserChannelsList(id);
@@ -49,6 +49,16 @@ namespace GatewayService.Controllers
                 return View(channelsList);
             _logger.LogInformation($"%%% no user {id} channels");
             return NotFound();
+        }
+
+        [HttpGet("channels")]
+        public async Task<IActionResult> GetTopChannels()
+        {
+            var channelsList = await _gateway.GetTopChannels();
+            if (channelsList != null)
+                return View("~/Views/Profiles/ChannelsList.cshtml", channelsList);
+            _logger.LogInformation($"%%% no channels");
+            return NotFound("Извините, пока недоступно");
         }
 
         // список подписок пользователя
@@ -80,7 +90,7 @@ namespace GatewayService.Controllers
         // доабвление доски
         // POST api/profiles/id/boards
         [HttpPost("{id}/create")]
-        public async Task<IActionResult> AddBoardorChannel(int id, string name, string descr, bool isChannel)
+        public async Task<IActionResult> AddBoardorChannel(int id, bool isChannel, string name = "Новая доска/канал", string descr = "Здесь должно было быть описание")
         {
             if (isChannel)
             {
@@ -125,11 +135,11 @@ namespace GatewayService.Controllers
         [HttpPost("{id}/subscriptions")]
         public async Task<IActionResult> AddUserSubscription(int id, [FromBody] Subscription subscription)
         {
-            var createdSubscription = await _gateway.AddUserSubscription(id, subscription);
+            /*var createdSubscription = await _gateway.AddUserSubscription(id, subscription);
             if (createdSubscription != null)
                 return View();// Created($"{id}/subscriptions/{createdSubscription.Id}", createdSubscription);
             _logger.LogInformation($"%%% couldnt add the subscription");
-            return BadRequest();
+            */return BadRequest();
         }
 
         public IActionResult NewBoard(int userid)
@@ -138,6 +148,23 @@ namespace GatewayService.Controllers
 
             return PartialView("CreateBoardModalPartial", model);
         }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchByTag([FromQuery] string tag)
+        {
+            var images = await _gateway.GetImagesByTag(tag);
+            return View("~/Views/Profiles/SearchResults.cshtml", images);
+        }
+
+        [HttpGet("{cid}/subscribe")]
+        public async Task<IActionResult> Subscribe([FromRoute]int cid, [FromQuery] bool issubed)
+        {
+            var subscription = new Subscription() { ChannelId = cid, UserId = (await GetCurrentUserAsync()).ProfileId };
+            var createdSubscription = await _gateway.AddUserSubscription(issubed, subscription);
+            return RedirectToAction("GetFullChannel", "Images", new { id = cid });
+        }
+
+
 
         private Task<Account> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 

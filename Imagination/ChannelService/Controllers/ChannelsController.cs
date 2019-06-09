@@ -28,13 +28,24 @@ namespace ChannelService.Controllers
             return _context.Channels.Where(c => c.UserId == userid);
         }
 
+        [HttpGet("top")]
+        public IEnumerable<Channel> GetTopChannels()
+        {
+            int top = 20;
+            int count = _context.Channels.Count();
+            return _context.Channels.OrderBy(r => Guid.NewGuid()).Take((count>top)?top:count);
+        }
+
         [HttpGet("{id}/images")]
-        public ResponseChannel GetChannelImages([FromRoute] int id)
+        public ResponseChannel GetChannelImages([FromRoute]int id, [FromQuery]int userid)
         {
             var cims = _context.ChannelImages.Where(c => c.ChannelId == id);
             var ch = _context.Channels.Find(id);
             var scount = _context.Subscriptions.Where(c => c.ChannelId == id).Count();
-            return new ResponseChannel() { channel = ch, images = cims, subsCount = scount };
+            //var sub = _context.Subscriptions.Where(s => s.ChannelId == id && s.UserId == userid);
+            //var issubed = (sub.Count() != 0) ? true : false;
+            var issubed = _context.Subscriptions.Any(s => s.ChannelId == id && s.UserId == userid);
+            return new ResponseChannel() { channel = ch, images = cims, subsCount = scount, isSubscribed = issubed };
         }
 
         [HttpGet("{id}/subs")]
@@ -121,6 +132,11 @@ namespace ChannelService.Controllers
                 return BadRequest(ModelState);
             }
 
+            var chimages = _context.ChannelImages.Where(c => c.ChannelId == id);
+            if (chimages != null && chimages.Count() > 0)
+            {
+                _context.ChannelImages.RemoveRange(chimages);
+            }
             var channel = await _context.Channels.FindAsync(id);
             if (channel == null)
             {
@@ -131,6 +147,26 @@ namespace ChannelService.Controllers
             await _context.SaveChangesAsync();
 
             return Ok(channel);
+        }
+
+        [HttpDelete("{id}/images/{imageid}")]
+        public async Task<IActionResult> DeleteChannelImage(int id, int imageid)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var channelImage = _context.ChannelImages.First(c => c.Id == imageid); 
+            if (channelImage == null)
+            {
+                return NotFound();
+            }
+
+            _context.ChannelImages.Remove(channelImage);
+            await _context.SaveChangesAsync();
+
+            return Ok(channelImage);
         }
 
         [HttpPost("images")]

@@ -22,6 +22,22 @@ namespace GatewayService.Services
             _remoteServiceBaseUrl = $"{configuration["ChannelUrl"]}";
         }
 
+        public async Task<IEnumerable<Channel>> GetTopChannels()
+        {
+            var request = new HttpRequestMessage(new HttpMethod("GET"),
+                _remoteServiceBaseUrl + "/channels/top");
+
+            try
+            {
+                var response = await _httpClient.SendAsync(request);
+                return await response.Content.ReadAsAsync<IEnumerable<Channel>>();
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
         public async Task<IEnumerable<Channel>> GetUserChannelsList(int id)
         {
             var request = new HttpRequestMessage(new HttpMethod("GET"),
@@ -72,12 +88,40 @@ namespace GatewayService.Services
             }
         }
 
-        public async Task<Subscription> AddUserSubscription(int id, Subscription subscription)
+
+        public async Task<bool> IsSubed(int cid, int uid)
         {
-            var request = new HttpRequestMessage(new HttpMethod("POST"),
-                _remoteServiceBaseUrl + "/subscriptions");
-            request.Content = new StringContent(JsonConvert.SerializeObject(subscription),
-                Encoding.UTF8, "application/json");
+            var request = new HttpRequestMessage(new HttpMethod("GET"),
+                _remoteServiceBaseUrl + "/subscriptions/" + cid.ToString() + "/issubed/" + uid.ToString());
+
+            try
+            {
+                var response = await _httpClient.SendAsync(request);
+                var b = await response.Content.ReadAsAsync<bool>();
+                return b;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+
+        public async Task<Subscription> AddUserSubscription(bool issubed, Subscription subscription)
+        {
+            HttpRequestMessage request;
+            var isReallySubed = await IsSubed(subscription.ChannelId, subscription.UserId);
+
+            if (!isReallySubed)
+            {
+                request = new HttpRequestMessage(new HttpMethod("POST"),
+                    _remoteServiceBaseUrl + "/subscriptions");
+                request.Content = new StringContent(JsonConvert.SerializeObject(subscription),
+                    Encoding.UTF8, "application/json");
+            }
+            else
+                request = new HttpRequestMessage(new HttpMethod("DELETE"),
+                    _remoteServiceBaseUrl + "/subscriptions/" + subscription.ChannelId + "?userid=" + 
+                    subscription.UserId.ToString());
 
             try
             {
@@ -90,15 +134,16 @@ namespace GatewayService.Services
             }
         }
 
-        public async Task<ChannelWithImages> GetChannelImages(int id)
+        public async Task<ChannelWithImages> GetChannelImages(int id, int userid)
         {
             var request = new HttpRequestMessage(new HttpMethod("GET"),
-                _remoteServiceBaseUrl + "/channels/" + id.ToString() + "/images");
+            _remoteServiceBaseUrl + "/channels/" + id.ToString() + "/images?userid=" + userid.ToString());
 
             try
             {
                 var response = await _httpClient.SendAsync(request);
-                return await response.Content.ReadAsAsync<ChannelWithImages>();
+                var channel = await response.Content.ReadAsAsync<ChannelWithImages>();
+                return channel;
             }
             catch (Exception e)
             {
@@ -137,6 +182,38 @@ namespace GatewayService.Services
             catch (Exception e)
             {
                 return null;
+            }
+        }
+
+        public async Task DeleteImage(int id, int imageid)
+        {
+            var request = new HttpRequestMessage(new HttpMethod("DELETE"),
+                _remoteServiceBaseUrl + "/channels/"+id.ToString()+"/images/"+imageid.ToString());
+
+            try
+            {
+                var response = await _httpClient.SendAsync(request);
+                //return await response.Content.ReadAsAsync<ChannelImage>();
+            }
+            catch (Exception e)
+            {
+                //return null;
+            }
+        }
+
+        public async Task DeleteChannel(int id)
+        {
+            var request = new HttpRequestMessage(new HttpMethod("DELETE"),
+                _remoteServiceBaseUrl + "/channels/" + id.ToString());
+
+            try
+            {
+                var response = await _httpClient.SendAsync(request);
+                //return await response.Content.ReadAsAsync<ChannelImage>();
+            }
+            catch (Exception e)
+            {
+                //return null;
             }
         }
     }
