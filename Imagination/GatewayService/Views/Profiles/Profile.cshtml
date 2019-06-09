@@ -1,4 +1,8 @@
 ﻿@model UserService.Data.Models.User
+@using Microsoft.AspNetCore.Identity
+@using GatewayService.Areas.Identity.Data
+@inject UserManager<Account> UserManager
+
 @inject GatewayService.Services.GatewayService gate
 @{
     Layout = "_Layout";
@@ -12,7 +16,7 @@
 @{ var subs = await gate.GetUserSubscriptionsList(Model.Id);}
 
 
-<div class="col-lg-10" style="margin-left:80px;">
+<div class="row">
 
     <!--  <div class="col-md-4">
             <div class="profile-img">
@@ -23,28 +27,38 @@
           </div>
                       </div>
     </div>-->
-    <div class="col-md-6">
-        <h5>
-            @Model.ShortName
-        </h5>
-        <h6>
-            @{ var name = $"{Model.FirstName} {Model.LastName}";}
-            @name
-        </h6>
-        <br/>
-        <ul class="nav nav-tabs">
+    <div class="col-lg-5" style="margin-left:80px;padding-right:30px">
+        <div class="form-group row">
+            <div class="col-sm-6">
+                <h2>
+                    @Model.ShortName
+                </h2>
+                <h6>
+                    @UserManager.GetUserName(User)
+                </h6>
+            </div>
+            <div class="col-sm-6">
+                
+                <h4 style="margin-top:7px;">
+                    @{ var name = $"{Model.FirstName} {Model.LastName}";}
+                    @name
+                </h4>
+            </div>
+        </div>
+        
+
+        <br /><br />
+        <ul class="nav nav-tabs text-center">
             <li class="nav-item">
-                <a class="active nav-link" data-toggle="tab" href="#boardsTab">Boards</a>
+                <a class="active nav-link" data-toggle="tab" href="#boardsTab">Доски</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" href="#channelsTab">Channels</a>
+                <a class="nav-link" data-toggle="tab" href="#channelsTab">Созданные каналы</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" href="#subsTab">Subscriptions</a>
+                <a class="nav-link" data-toggle="tab" href="#subsTab">Подписки</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" href="#createTab">Create</a>
-            </li>
+
         </ul>
         <div class="tab-content" style="margin-top:10px; margin-left:20px">
             <div class="tab-pane fade active show" id="boardsTab">
@@ -106,21 +120,37 @@
                         </div>
                     }
                 }
-                </div>
-            <div class="tab-pane fade" id="createTab">
-                <form asp-controller="Profiles" asp-action="AddBoardorChannel" |
-                      asp-route-id="@Model.Id" method="post">
-                    <input name="isChannel" type="radio" value="true" />
-                    <span>Channel</span> <br />
-                    <input name="isChannel" type="radio" value="false" />
-                    <span>Board</span> <br />
-                    Name:  <input name="name" /> <br />
-                    Description: <input name="descr" /><br />
-                    <button type="submit">Create</button>
-                </form>
             </div>
 
+
         </div>
-        <hr/>
+        <hr />
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+    <div class="col-lg-3">
+        <form asp-controller="Profiles" asp-action="AddBoardorChannel" |
+              asp-route-id="@Model.Id" method="post">
+            <fieldset>
+                <legend>Создайте свою доску или канал:</legend>
+                <div class="form-group">
+                    <label for="exampleSelect1">Выберите:</label>
+                    <select class="form-control" id="exampleSelect1" name="isChannel">
+                        <option value="false">Доска</option>
+                        <option value="true">Канал</option>
+                    </select>
+                </div>
+                <!--<input name="isChannel" type="radio" value="true" />
+                <span>Channel</span> <br />
+                <input name="isChannel" type="radio" value="false" />
+                <span>Board</span> <br />-->
+                <label for="nameInput">Название</label>
+                <input class="form-control" name="name" id="nameInput" /> <br />
+                <label for="descrInput">Описание</label>
+                <input class="form-control" name="descr" id="descrInput" /><br />
+                <button type="submit" class="btn btn-secondary">Создать</button>
+            </fieldset>
+        </form>
     </div>
 </div>
