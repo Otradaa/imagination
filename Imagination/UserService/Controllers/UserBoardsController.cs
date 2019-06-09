@@ -91,7 +91,7 @@ namespace UserService.Controllers
         // удаление изображения из доски
         // DELETE: api/UserBoards/5
         [HttpDelete("images/{id}")]
-        public async Task<IActionResult> DeleteImageFromBoard([FromRoute] int id)
+        public async Task<IActionResult> DeleteImageFromBoard( int id)
         {
             if (!ModelState.IsValid)
             {

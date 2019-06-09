@@ -86,6 +86,11 @@ namespace UserService.Data.Repository
 
         public async Task RemoveBoard(UserBoard board)
         {
+            var images = _context.BoardImages.Where(c => c.BoardId == board.Id);
+            if (images != null && images.Count() > 0)
+            {
+                _context.BoardImages.RemoveRange(images);
+            }
             _context.UserBoards.Remove(board);
             await _context.SaveChangesAsync();
         }
