@@ -1,6 +1,7 @@
 ﻿using ChannelService.Data.Models;
 using GatewayService.Models;
 using Microsoft.Extensions.Logging;
+using StorageService.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,6 +39,11 @@ namespace GatewayService.Services
             return await _channelService.GetUserChannelsList(userId);
         }
 
+        public async Task<IEnumerable<Channel>> GetTopChannels()
+        {
+            return await _channelService.GetTopChannels();
+        }
+
         public async Task<IEnumerable<SubsResponse>> GetUserSubscriptionsList(int userId)
         {
             return await _channelService.GetUserSubscriptionsList(userId);
@@ -58,9 +64,9 @@ namespace GatewayService.Services
             return await _channelService.AddUserChannel(userId, channel);
         }
 
-        public async Task<Subscription> AddUserSubscription(int userId, Subscription subscription)
+        public async Task<Subscription> AddUserSubscription(bool issubed, Subscription subscription)
         {
-            return await _channelService.AddUserSubscription(userId, subscription);
+            return await _channelService.AddUserSubscription(issubed, subscription);
         }
 
         public async Task<BoardWithImages> GetBoardWithImages(int id)
@@ -73,9 +79,9 @@ namespace GatewayService.Services
 
         }
 
-        public async Task<ChannelWithImages> GetChannelWithImages(int id)
+        public async Task<ChannelWithImages> GetChannelWithImages(int id, int userid)
         {
-            var imagChannel = await _channelService.GetChannelImages(id);
+            var imagChannel = await _channelService.GetChannelImages(id, userid);
             //var subs = await _channelService.GetSubsCount(id);
             var imageIds = imagChannel.images.Select(s => s.ImageId);
             imagChannel.files = await _storageService.GetImageFiles(imageIds);
@@ -98,6 +104,31 @@ namespace GatewayService.Services
         public async Task<int> AddUser(User user)
         {
             return await _userService.AddUser(user);
+        }
+
+        public async Task DeleteImageFromChannel(int id, int imageid)
+        {
+            await _channelService.DeleteImage(id, imageid);
+        }
+
+        public async Task DeleteImageFromBoard(int id, int imageid)
+        {
+            await _userService.DeleteImage(id, imageid);
+        }
+
+        public async Task DeleteChannel(int id)
+        {
+            await _channelService.DeleteChannel(id);
+        }
+
+        public async Task DeleteBoard(int id)
+        {
+            await _userService.DeleteBoard(id);
+        }
+
+        public async Task<IEnumerable<Image>> GetImagesByTag(string tag)
+        {
+            return await _storageService.GetImagesByTag(tag);
         }
     }
 }

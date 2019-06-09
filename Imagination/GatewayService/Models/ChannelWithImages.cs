@@ -13,5 +13,6 @@ namespace GatewayService.Models
         public IEnumerable<ChannelImage> images { get; set; }
         public IEnumerable<Image> files { get; set; }
         public int subsCount { get; set; }
+        public bool isSubscribed { get; set; }
     }
 }

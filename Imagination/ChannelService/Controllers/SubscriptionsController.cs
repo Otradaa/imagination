@@ -96,6 +96,13 @@ namespace ChannelService.Controllers
             return NoContent();
         }
 
+        [HttpGet("{cid}/issubed/{uid}")]
+        public bool IsSubed([FromRoute] int cid, [FromRoute] int uid)
+        {
+            var issubed = _context.Subscriptions.Any(s => s.ChannelId == cid && s.UserId == uid);
+            return issubed;
+        }
+
         // POST: api/Subscriptions
         [HttpPost]
         public async Task<IActionResult> PostSubscription([FromBody] Subscription subscription)
@@ -108,19 +115,14 @@ namespace ChannelService.Controllers
             _context.Subscriptions.Add(subscription);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetSubscription", new { id = subscription.Id }, subscription);
+            return Ok(subscription);
         }
 
         // DELETE: api/Subscriptions/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteSubscription([FromRoute] int id)
+        [HttpDelete("{cid}")]
+        public async Task<IActionResult> DeleteSubscription([FromRoute] int cid, [FromQuery]int userid)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var subscription = await _context.Subscriptions.FindAsync(id);
+            var subscription = await _context.Subscriptions.FirstAsync(s=> s.ChannelId==cid && s.UserId==userid);
             if (subscription == null)
             {
                 return NotFound();
