@@ -57,5 +57,23 @@ namespace GatewayService.Services
                 return null;
             }
         }
+
+        public async Task<IEnumerable<Image>> GetImagesByTag(string tag)
+        {
+            var request = new HttpRequestMessage(new HttpMethod("GET"),
+                _remoteServiceBaseUrl + "/images/search?tag=" + tag);
+
+            try
+            {
+                var response = await _httpClient.SendAsync(request);
+                var images = await response.Content.ReadAsAsync<IEnumerable<Image>>();
+                return images;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
     }
 }

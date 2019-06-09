@@ -28,6 +28,19 @@ namespace StorageService.Controllers
             return _context.Images.Where(m => ids.Contains(m.Id));
         }
 
+        [HttpGet("search")]
+        public IEnumerable<Image> GetImageByTag([FromQuery] string tag)
+        {
+            var images = from m in _context.Images
+                         select m;
+            if (!string.IsNullOrEmpty(tag))
+            {
+                images = images.Where(s => s.Tags.Contains(tag));
+                return images;
+            }
+            return null;
+        }
+
         // GET: api/Images/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetImage([FromRoute] int id)

@@ -10,5 +10,7 @@ namespace GatewayService.Services
     {
         Task<IEnumerable<Image>> GetImageFiles(IEnumerable<int> ids);
         Task<Image> AddImage(string path, string tags);
+        Task<IEnumerable<Image>> GetImagesByTag(string tag);
+
     }
 }
